@@ -13,8 +13,4 @@ public class ReverseNumberService {
         }
         return reversedNumber;
     }
-    //todo write a method which returns reversed value of given integer;
-    //example 1234 % 10 = 4
-    // example 1234 / 10 = 123
-    // reverse = 4, 43, 432, 4321
 }

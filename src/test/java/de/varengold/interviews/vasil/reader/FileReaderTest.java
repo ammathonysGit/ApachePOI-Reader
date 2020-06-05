@@ -31,19 +31,29 @@ class FileReaderTest {
 
     @Test
     public void testCorrespondingNumberPositiveValue() {
-        assertEquals(fileReader.extractValueCorrespondingToColumnName(sheetExample(12345678, "testSheet", "targetColumn")), 12345678);
+        assertEquals(fileReader.extractValue(sheetExample(12345678, "testSheet", "targetColumn")), 12345678);
     }
 
     @Test
     public void testCorrespondingNumberNegativeValue() {
-        assertEquals(fileReader.extractValueCorrespondingToColumnName(sheetExample(-12345678, "testSheet", "targetColumn")), -12345678);
+
+        assertEquals(fileReader.extractValue(sheetExample(-12345678, "testSheet", "targetColumn")), -12345678);
     }
 
     @Test
-    public void testCorrespondingNumberWithInvalidSheet() {
+    public void testExtractValueWithInvalidSheet() {
         assertThrows(InvalidSheetException.class, () -> {
-           fileReader.extractValueCorrespondingToColumnName(null);
+            fileReader.extractValueFromSheet();
         });
+    }
+
+    @Test
+    public void testReadFileWithInvalidPath() {
+        assertThrows(RuntimeException.class, () -> {
+            excelProperties.setFileName("InvalidName");
+            fileReader.extractValueFromSheet();
+        });
+
     }
 
     private Sheet sheetExample(long value, String sheetName, String columnName) {
