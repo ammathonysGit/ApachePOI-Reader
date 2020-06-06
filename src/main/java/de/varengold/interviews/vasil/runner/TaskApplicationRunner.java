@@ -1,6 +1,6 @@
 package de.varengold.interviews.vasil.runner;
 
-import de.varengold.interviews.vasil.reader.FileReader;
+import de.varengold.interviews.vasil.reader.SheetExtractor;
 import de.varengold.interviews.vasil.service.ReverseNumberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -14,17 +14,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TaskApplicationRunner implements CommandLineRunner {
 
-    private final FileReader fileReader;
+    private final SheetExtractor sheetExtractor;
     private final ReverseNumberService reverseNumberService;
 
-    public TaskApplicationRunner(FileReader fileReader, ReverseNumberService reverseNumberService) {
-        this.fileReader = fileReader;
+    public TaskApplicationRunner(SheetExtractor sheetExtractor, ReverseNumberService reverseNumberService) {
+        this.sheetExtractor = sheetExtractor;
         this.reverseNumberService = reverseNumberService;
     }
 
     @Override
     public void run(String... args) {
-        long extractedValueFromSheet = fileReader.extractValueFromSheet();
+        long extractedValueFromSheet = sheetExtractor.extractValue();
         long reversedExtractedValue = reverseNumberService.reverseNumber(extractedValueFromSheet);
         log.info("Reversed value: {}", reversedExtractedValue);
     }

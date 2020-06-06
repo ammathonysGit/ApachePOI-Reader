@@ -31,12 +31,12 @@ import org.springframework.stereotype.Service;
 @Service
 @Getter
 @Slf4j
-public class FileReader {
+public class SheetExtractor {
 
   private final ExcelProperties excelProperties;
 
   @Autowired
-  public FileReader(ExcelProperties excelProperties) {
+  public SheetExtractor(ExcelProperties excelProperties) {
     this.excelProperties = excelProperties;
   }
 
@@ -44,7 +44,7 @@ public class FileReader {
    * Extracts value from a sheet by columnName by fileName, sheetName.
    * @return the reversed number
    */
-  public long extractValueFromSheet() {
+  public long extractValue() {
     try {
       if (excelProperties == null) {
         log.error("Properties are null can't proceed further");

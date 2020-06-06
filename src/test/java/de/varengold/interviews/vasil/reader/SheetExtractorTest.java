@@ -3,11 +3,10 @@ package de.varengold.interviews.vasil.reader;
 import de.varengold.interviews.vasil.exceptions.InvalidSheetException;
 import de.varengold.interviews.vasil.exceptions.NoCellFoundException;
 import de.varengold.interviews.vasil.properties.ExcelProperties;
-import de.varengold.interviews.vasil.service.ReverseNumberService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -16,28 +15,28 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-class FileReaderTest {
+class SheetExtractorTest {
 
     private ExcelProperties excelProperties;
 
-    private FileReader fileReader;
+    private SheetExtractor sheetExtractor;
 
     @BeforeEach
     public void init() {
         this.excelProperties = new ExcelProperties();
-        this.fileReader = new FileReader(excelProperties);
+        this.sheetExtractor = new SheetExtractor(excelProperties);
     }
 
     @Test
     public void testExtractValueFromSheet() throws IOException {
         configureExcelProperties("testFileExcel.xlsx", "secondColumn", "testSheet");
-        assertEquals(fileReader.extractValueFromSheet(), 5678);
+        assertEquals(sheetExtractor.extractValue(), 5678);
     }
 
     @Test
     public void testExtractValueWithNullProperties() {
         assertThrows(RuntimeException.class, () -> {
-            fileReader.extractValueFromSheet();
+            sheetExtractor.extractValue();
         });
     }
 
@@ -45,7 +44,7 @@ class FileReaderTest {
     public void testExtractValueWithInvalidColumnName() {
         assertThrows(NoCellFoundException.class, () -> {
             configureExcelProperties("testFileExcel.xlsx", "InvalidColumnName", "testSheet");
-            fileReader.extractValueFromSheet();
+            sheetExtractor.extractValue();
         });
     }
 
@@ -53,7 +52,7 @@ class FileReaderTest {
     public void testExtractValueWithInvalidSheet() throws IOException {
         configureExcelProperties("testFileExcel.xlsx", null, "test");
         assertThrows(InvalidSheetException.class, () -> {
-            fileReader.extractValueFromSheet();
+            sheetExtractor.extractValue();
         });
     }
 
@@ -61,7 +60,7 @@ class FileReaderTest {
     public void testReadFileWithInvalidPath() {
         assertThrows(RuntimeException.class, () -> {
             configureExcelProperties(null, "targetColumn", null);
-            fileReader.extractValueFromSheet();
+            sheetExtractor.extractValue();
         });
     }
 
@@ -69,7 +68,7 @@ class FileReaderTest {
     public void testExtractValueWithNoValueForTheColumn() {
         assertThrows(NoCellFoundException.class, () -> {
             configureExcelProperties("testFileExcel.xlsx", "noValueBelow", "testSheet");
-            fileReader.extractValueFromSheet();
+            sheetExtractor.extractValue();
         });
     }
 
