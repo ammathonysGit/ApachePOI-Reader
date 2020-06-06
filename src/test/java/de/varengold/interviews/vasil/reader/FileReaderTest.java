@@ -3,10 +3,7 @@ package de.varengold.interviews.vasil.reader;
 import de.varengold.interviews.vasil.exceptions.InvalidSheetException;
 import de.varengold.interviews.vasil.properties.ExcelProperties;
 import de.varengold.interviews.vasil.service.ReverseNumberService;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,20 +25,22 @@ class FileReaderTest {
         this.fileReader = new FileReader(excelProperties, reverseNumberService);
     }
 
-
     @Test
-    public void testCorrespondingNumberPositiveValue() {
-        assertEquals(fileReader.extractValue(sheetExample(12345678, "testSheet", "targetColumn")), 12345678);
+    public void testExtractValueFromSheet() {
+        configureExcelProperties("testFile.xlsx", "targetColumn", "testSheet");
+        assertEquals(fileReader.extractValueFromSheet(), 91024021);
     }
 
     @Test
-    public void testCorrespondingNumberNegativeValue() {
-
-        assertEquals(fileReader.extractValue(sheetExample(-12345678, "testSheet", "targetColumn")), -12345678);
+    public void testExtractValueWithNullProperties() {
+        assertThrows(RuntimeException.class, () -> {
+            fileReader.extractValueFromSheet();
+        });
     }
 
     @Test
     public void testExtractValueWithInvalidSheet() {
+        configureExcelProperties("testFile.xlsx", null, "test");
         assertThrows(InvalidSheetException.class, () -> {
             fileReader.extractValueFromSheet();
         });
@@ -50,22 +49,17 @@ class FileReaderTest {
     @Test
     public void testReadFileWithInvalidPath() {
         assertThrows(RuntimeException.class, () -> {
-            excelProperties.setFileName("InvalidName");
+            configureExcelProperties(null, "targetColumn", null);
             fileReader.extractValueFromSheet();
         });
 
     }
 
-    private Sheet sheetExample(long value, String sheetName, String columnName) {
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet(sheetName);
-        Row firstRow = sheet.createRow(0);
-        firstRow.createCell(0);
-        Row secondRow = sheet.createRow(1);
-        secondRow.createCell(0);
-        sheet.getRow(0).getCell(0).setCellValue(columnName);
-        sheet.getRow(1).getCell(0).setCellValue(value);
-
-        return sheet;
+    private void configureExcelProperties(final String fileName,
+                                          final String columnName,
+                                          final String sheetName) {
+        excelProperties.setSheetName(sheetName);
+        excelProperties.setFileName(fileName);
+        excelProperties.setColumnName(columnName);
     }
 }

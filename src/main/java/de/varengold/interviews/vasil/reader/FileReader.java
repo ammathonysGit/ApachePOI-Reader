@@ -40,6 +40,10 @@ public class FileReader {
 
   public long extractValueFromSheet() {
     try {
+      if (excelProperties == null) {
+        log.error("Properties are null can't proceed further");
+        throw new RuntimeException("Properties are invalid.");
+      }
       log.info("Starting to read file: " + excelProperties.getFileName());
       Resource resource = new ClassPathResource(excelProperties.getFileName());
       Workbook workbook = WorkbookFactory.create(resource.getFile());
@@ -52,7 +56,7 @@ public class FileReader {
     }
   }
 
-  public long extractValue(Sheet sheet) {
+  private long extractValue(Sheet sheet) {
     if (sheet == null) {
       log.error("Error: Sheet is invalid.");
       throw new InvalidSheetException("Sheet is invalid, cannot proceed with the extraction");
