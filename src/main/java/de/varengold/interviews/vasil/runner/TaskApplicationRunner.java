@@ -5,6 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+/**
+ * TaskApplicationRunner is used to log the final result to the console.
+ * It has FileReader as a dependency.
+ */
 @Component
 @Slf4j
 public class TaskApplicationRunner implements CommandLineRunner {
@@ -20,5 +24,3 @@ public class TaskApplicationRunner implements CommandLineRunner {
         log.info("Reversed value: " + fileReader.extractValueFromSheet());
     }
 }
-
-

@@ -1,6 +1,7 @@
 package de.varengold.interviews.vasil.reader;
 
 import de.varengold.interviews.vasil.exceptions.InvalidSheetException;
+import de.varengold.interviews.vasil.exceptions.NoCellFoundException;
 import de.varengold.interviews.vasil.properties.ExcelProperties;
 import de.varengold.interviews.vasil.service.ReverseNumberService;
 
@@ -27,13 +28,21 @@ class FileReaderTest {
 
     @Test
     public void testExtractValueFromSheet() {
-        configureExcelProperties("testFile.xlsx", "targetColumn", "testSheet");
-        assertEquals(fileReader.extractValueFromSheet(), 91024021);
+        configureExcelProperties("testFile.xlsx", "secondColumn", "testSheet");
+        assertEquals(fileReader.extractValueFromSheet(), 8765);
     }
 
     @Test
     public void testExtractValueWithNullProperties() {
         assertThrows(RuntimeException.class, () -> {
+            fileReader.extractValueFromSheet();
+        });
+    }
+
+    @Test
+    public void testExtractValueWithInvalidColumnName() {
+        assertThrows(NoCellFoundException.class, () -> {
+            configureExcelProperties("testFile.xlsx", "InvalidColumnName", "testSheet");
             fileReader.extractValueFromSheet();
         });
     }
