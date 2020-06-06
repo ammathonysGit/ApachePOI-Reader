@@ -18,8 +18,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -54,8 +53,8 @@ public class FileReader {
         throw new RuntimeException("Properties are invalid.");
       }
       log.info("Starting to read file: " + excelProperties.getFileName());
-      Resource resource = new ClassPathResource(excelProperties.getFileName());
-      Workbook workbook = WorkbookFactory.create(resource.getFile());
+      FileSystemResource excelFile = new FileSystemResource(excelProperties.getFileName());
+      Workbook workbook = WorkbookFactory.create(excelFile.getFile());
       Sheet sheet = workbook.getSheet(excelProperties.getSheetName());
 
      return reverseNumberService.reverseNumber(extractValue(sheet));
@@ -103,7 +102,6 @@ public class FileReader {
         number = (long) cellCorrespondingIndex.getNumericCellValue(); // find the first value and return it.
         return number;
       }
-
     }
     return number;
   }

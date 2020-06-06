@@ -28,7 +28,7 @@ class FileReaderTest {
 
     @Test
     public void testExtractValueFromSheet() {
-        configureExcelProperties("testFile.xlsx", "secondColumn", "testSheet");
+        configureExcelProperties("/home/vasil/java11/src/main/resources/testFile.xlsx", "secondColumn", "testSheet");
         assertEquals(fileReader.extractValueFromSheet(), 8765);
     }
 
@@ -42,14 +42,15 @@ class FileReaderTest {
     @Test
     public void testExtractValueWithInvalidColumnName() {
         assertThrows(NoCellFoundException.class, () -> {
-            configureExcelProperties("testFile.xlsx", "InvalidColumnName", "testSheet");
+            configureExcelProperties("/home/vasil/java11/src/main/resources/testFile.xlsx",
+                                     "InvalidColumnName", "testSheet");
             fileReader.extractValueFromSheet();
         });
     }
 
     @Test
     public void testExtractValueWithInvalidSheet() {
-        configureExcelProperties("testFile.xlsx", null, "test");
+        configureExcelProperties("/home/vasil/java11/src/main/resources/testFile.xlsx", null, "test");
         assertThrows(InvalidSheetException.class, () -> {
             fileReader.extractValueFromSheet();
         });
@@ -61,7 +62,6 @@ class FileReaderTest {
             configureExcelProperties(null, "targetColumn", null);
             fileReader.extractValueFromSheet();
         });
-
     }
 
     private void configureExcelProperties(final String fileName,
