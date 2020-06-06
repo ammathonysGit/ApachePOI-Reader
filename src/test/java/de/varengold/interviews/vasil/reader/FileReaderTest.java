@@ -7,6 +7,11 @@ import de.varengold.interviews.vasil.service.ReverseNumberService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,8 +29,8 @@ class FileReaderTest {
     }
 
     @Test
-    public void testExtractValueFromSheet() {
-        configureExcelProperties("/home/vasil/java11/src/main/resources/testFile.xlsx", "secondColumn", "testSheet");
+    public void testExtractValueFromSheet() throws IOException {
+        configureExcelProperties("testFileExcel.xlsx", "secondColumn", "testSheet");
         assertEquals(fileReader.extractValueFromSheet(), 5678);
     }
 
@@ -39,15 +44,14 @@ class FileReaderTest {
     @Test
     public void testExtractValueWithInvalidColumnName() {
         assertThrows(NoCellFoundException.class, () -> {
-            configureExcelProperties("/home/vasil/java11/src/main/resources/testFile.xlsx",
-                                     "InvalidColumnName", "testSheet");
+            configureExcelProperties("testFileExcel.xlsx", "InvalidColumnName", "testSheet");
             fileReader.extractValueFromSheet();
         });
     }
 
     @Test
-    public void testExtractValueWithInvalidSheet() {
-        configureExcelProperties("/home/vasil/java11/src/main/resources/testFile.xlsx", null, "test");
+    public void testExtractValueWithInvalidSheet() throws IOException {
+        configureExcelProperties("testFileExcel.xlsx", null, "test");
         assertThrows(InvalidSheetException.class, () -> {
             fileReader.extractValueFromSheet();
         });
@@ -64,16 +68,17 @@ class FileReaderTest {
     @Test
     public void testExtractValueWithNoValueForTheColumn() {
         assertThrows(NoCellFoundException.class, () -> {
-            configureExcelProperties("/home/vasil/java11/src/main/resources/testFile.xlsx", "noValueBelow", "testSheet");
+            configureExcelProperties("testFileExcel.xlsx", "noValueBelow", "testSheet");
             fileReader.extractValueFromSheet();
         });
     }
 
     private void configureExcelProperties(final String fileName,
                                           final String columnName,
-                                          final String sheetName) {
+                                          final String sheetName) throws IOException {
+        Resource resource = new ClassPathResource(fileName);
         excelProperties.setSheetName(sheetName);
-        excelProperties.setFileName(fileName);
+        excelProperties.setFileName(resource.getFile().getAbsolutePath());
         excelProperties.setColumnName(columnName);
     }
 }

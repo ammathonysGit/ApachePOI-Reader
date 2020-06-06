@@ -68,18 +68,43 @@ public class FileReader {
 
   private Cell extractCell(Sheet sheet) {
     if (sheet == null) {
-      log.error("Error: Sheet with name: {} couldn't be found.", excelProperties.getSheetName());
+      log.error("Error: Sheet with name: " + excelProperties.getSheetName() + " couldn't be found.");
       throw new InvalidSheetException("Sheet doesn't exist cannot proceed with the extraction");
     }
-    log.info("Extracting value from column: {}", excelProperties.getColumnName());
-    //Here I will hold the Cell index that matches the name;
-    int cellIndex = 0;
-    Cell cellToReturn = null;
+    log.info("Extracting value from column: " + excelProperties.getColumnName());
+    Cell headerCell = findHeaderCell(sheet);
+    int cellIndex = headerCell.getColumnIndex();
+    return getValueCell(sheet, cellIndex);
+  }
 
+  private Cell getValueCell(Sheet sheet, int cellIndex) {
+    Cell cellToReturn = null;
     // We can assume that here we have the column names.
     Row firstRow = sheet.getRow(0);
-    Cell desiredCell = null;
+    for (Row currentRow : sheet) {
+      if (currentRow == firstRow) {
+        continue;
+      }
+      // Here we already know the index of the cell and we can directly access it.
+      Cell cellCorrespondingIndex = currentRow.getCell(cellIndex);
+      if (cellCorrespondingIndex != null &&
+          CellType.NUMERIC.equals(cellCorrespondingIndex.getCellType()) &&
+          cellCorrespondingIndex.getColumnIndex() == cellIndex) {
+        cellToReturn = cellCorrespondingIndex;
+        break;
+      }
+    }
+    if (cellToReturn == null) {
+      log.error("Column with name: {} doesn't have value in Cells underneath it", excelProperties.getColumnName());
+      throw new NoCellFoundException("Couldn't find any Cell with value under the column: " + excelProperties.getColumnName());
+    }
+    return cellToReturn;
+  }
 
+  private Cell findHeaderCell(Sheet sheet) {
+    Cell desiredCell = null;
+    // We can assume that here we have the column names.
+    Row firstRow = sheet.getRow(0);
     // Go through the cells in the first row and search for the column by it's name
     for (Cell cellInFirstRow : firstRow) {
       if (CellType.STRING.equals(cellInFirstRow.getCellType()) &&
@@ -88,33 +113,13 @@ public class FileReader {
         break;
       }
     }
+
     // if we don't find a corresponding cell with the given columnName we can't proceed.
     if (desiredCell == null) {
       log.error("Error: No Cell found with the name: {}", excelProperties.getColumnName());
       throw new NoCellFoundException("No cell found with the name: " + excelProperties.getColumnName() + " cannot proceed");
     }
-    //if we find the cell with the corresponding name we get it's index
-    cellIndex = desiredCell.getColumnIndex();
-
-    for (Row currentRow : sheet) {
-      if (currentRow.equals(firstRow)) {
-        continue;
-      }
-      //Here we already know the index of the cell and we can directly access it.
-      Cell cellCorrespondingIndex = currentRow.getCell(cellIndex);
-      if (cellCorrespondingIndex != null &&
-          CellType.NUMERIC.equals(cellCorrespondingIndex.getCellType()) &&
-          cellCorrespondingIndex.getColumnIndex() == cellIndex) {
-          cellToReturn = cellCorrespondingIndex;
-          break;
-      }
-    }
-    //If all the Cells below the given columnName are empty we throw exception
-    if (cellToReturn == null) {
-        log.error("Column with name: {} doesn't have value in Cells underneath it", excelProperties.getColumnName());
-        throw new NoCellFoundException("Couldn't find any Cell with value under the column: " + excelProperties.getColumnName());
-    }
-    return cellToReturn;
+    return desiredCell;
   }
 
 }
