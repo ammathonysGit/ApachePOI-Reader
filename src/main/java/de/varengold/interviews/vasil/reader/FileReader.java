@@ -57,21 +57,21 @@ public class FileReader {
       Workbook workbook = WorkbookFactory.create(excelFile.getFile());
       Sheet sheet = workbook.getSheet(excelProperties.getSheetName());
 
-     return reverseNumberService.reverseNumber(extractValue(sheet));
+     return reverseNumberService.reverseNumber((long) extractCell(sheet).getNumericCellValue());
     } catch (IOException e) {
       log.error("Error: Couldn't find file:" + excelProperties.getFileName());
       throw new RuntimeException("Couldn't find file:" + excelProperties.getFileName());
     }
   }
 
-  private long extractValue(Sheet sheet) {
+  private Cell extractCell(Sheet sheet) {
     if (sheet == null) {
       log.error("Error: Sheet with name: " + excelProperties.getSheetName() + " couldn't be found.");
       throw new InvalidSheetException("Sheet doesn't exist cannot proceed with the extraction");
     }
     log.info("Extracting value from column: " + excelProperties.getColumnName());
     int cellIndex = 0; //Here I will hold the Cell index that matches the name;
-    long number = 0; //Creating a long because the number can be very large.
+    Cell cellToReturn = null;
 
     Row firstRow = sheet.getRow(0); // We can assume that here we have the column names.
     Cell desiredCell = null;
@@ -99,11 +99,15 @@ public class FileReader {
       if (cellCorrespondingIndex != null &&
           CellType.NUMERIC.equals(cellCorrespondingIndex.getCellType()) &&
           cellCorrespondingIndex.getColumnIndex() == cellIndex) {
-        number = (long) cellCorrespondingIndex.getNumericCellValue(); // find the first value and return it.
-        return number;
+          cellToReturn = cellCorrespondingIndex;
+          break;
       }
     }
-    return number;
+    if (cellToReturn == null) { //If all the Cells below the given columnName are empty we throw exception
+        log.error("Column with name: " + excelProperties.getColumnName() + " doesn't have value in Cells underneath it");
+        throw new NoCellFoundException("Couldn't find any Cell with value under the column: " + excelProperties.getColumnName());
+    }
+    return cellToReturn;
   }
 
 }

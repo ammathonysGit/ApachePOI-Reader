@@ -64,6 +64,14 @@ class FileReaderTest {
         });
     }
 
+    @Test
+    public void testExtractValueWithNoValueForTheColumn() {
+        assertThrows(NoCellFoundException.class, () -> {
+            configureExcelProperties("/home/vasil/java11/src/main/resources/testFile.xlsx", "noValueBelow", "testSheet");
+            fileReader.extractValueFromSheet();
+        });
+    }
+
     private void configureExcelProperties(final String fileName,
                                           final String columnName,
                                           final String sheetName) {
