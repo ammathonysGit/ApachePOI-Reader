@@ -24,9 +24,7 @@ import org.springframework.stereotype.Service;
 /**
  * FileReader class is responsible for reading a particular value from a given fileName, sheetName, columnName that are configured
  * in the application.properties file and then injected into the ExcelProperties class.
- * It has two dependencies which are ExcelProperties and ReverseNumberService.
  * ExcelProperties is used to get the  fileName, sheetName and columnName.
- * ReverseNumberService is used to reverse the value that has been extracted from the sheet.
  */
 @Service
 @Getter
