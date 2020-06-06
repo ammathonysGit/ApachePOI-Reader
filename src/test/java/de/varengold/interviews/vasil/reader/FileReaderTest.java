@@ -15,21 +15,18 @@ class FileReaderTest {
 
     private ExcelProperties excelProperties;
 
-    private ReverseNumberService reverseNumberService;
-
     private FileReader fileReader;
 
     @BeforeEach
     public void init() {
         this.excelProperties = new ExcelProperties();
-        this.reverseNumberService = new ReverseNumberService();
-        this.fileReader = new FileReader(excelProperties, reverseNumberService);
+        this.fileReader = new FileReader(excelProperties);
     }
 
     @Test
     public void testExtractValueFromSheet() {
         configureExcelProperties("/home/vasil/java11/src/main/resources/testFile.xlsx", "secondColumn", "testSheet");
-        assertEquals(fileReader.extractValueFromSheet(), 8765);
+        assertEquals(fileReader.extractValueFromSheet(), 5678);
     }
 
     @Test
