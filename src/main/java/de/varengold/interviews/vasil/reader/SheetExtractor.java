@@ -79,10 +79,9 @@ public class SheetExtractor {
 
   private Cell getValueCell(Sheet sheet, int cellIndex) {
     Cell cellToReturn = null;
-    // We can assume that here we have the column names.
     Row firstRow = sheet.getRow(0);
     for (Row currentRow : sheet) {
-      if (currentRow == firstRow) {
+      if (currentRow.equals(firstRow)) {
         continue;
       }
       // Here we already know the index of the cell and we can directly access it.
