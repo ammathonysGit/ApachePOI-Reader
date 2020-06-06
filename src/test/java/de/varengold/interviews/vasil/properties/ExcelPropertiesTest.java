@@ -14,7 +14,7 @@ class ExcelPropertiesTest {
     private ExcelProperties excelProperties;
 
     @Autowired
-    Environment environment;
+    private Environment environment;
 
     private final String FILE_NAME = "app.fileName";
 
