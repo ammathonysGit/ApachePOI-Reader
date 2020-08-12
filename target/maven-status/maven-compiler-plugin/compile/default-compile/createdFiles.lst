@@ -1,0 +1,7 @@
+de/varengold/interviews/vasil/exceptions/NoCellFoundException.class
+de/varengold/interviews/vasil/properties/ExcelProperties.class
+de/varengold/interviews/vasil/runner/TaskApplicationRunner.class
+de/varengold/interviews/vasil/TaskApplication.class
+de/varengold/interviews/vasil/service/ReverseNumberService.class
+de/varengold/interviews/vasil/exceptions/InvalidSheetException.class
+de/varengold/interviews/vasil/reader/SheetExtractor.class

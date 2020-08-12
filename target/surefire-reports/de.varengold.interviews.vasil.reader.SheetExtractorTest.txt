@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: de.varengold.interviews.vasil.reader.SheetExtractorTest
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.938 s - in de.varengold.interviews.vasil.reader.SheetExtractorTest
